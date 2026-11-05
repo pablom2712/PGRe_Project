@@ -152,26 +152,31 @@ int main(int argc, char* argv[]) {
 
 	GLuint vbo;
 	glCreateBuffers(1, &vbo);
-	glNamedBufferData(vbo, sphereVertices.size() * sizeof(SphereVertex), sphereVertices.data(), GL_STATIC_DRAW);
+	glNamedBufferData(vbo, sphereVertices.size() * sizeof(SphereVertex), sphereVertices.data(), GL_DYNAMIC_COPY);
 
 	GLuint ebo;
 	glCreateBuffers(1, &ebo);
-	glNamedBufferData(ebo, sphereIndices.size() * sizeof(uint32_t), sphereIndices.data(), GL_STATIC_DRAW);
+	glNamedBufferData(ebo, sphereIndices.size() * sizeof(uint32_t), sphereIndices.data(), GL_DYNAMIC_COPY);
 
 	GLuint vao;
 	glCreateVertexArrays(1, &vao);
-	glVertexArrayVertexBuffer(vao, 0, vbo, 0, sizeof(SphereVertex));
-	glVertexArrayElementBuffer(vao, ebo);
 
 	glEnableVertexArrayAttrib(vao, 0);
 	glVertexArrayAttribBinding(vao, 0, 0);
-	glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, offsetof(SphereVertex, position));
+	glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayVertexBuffer(vao, 0, vbo, sizeof(float) * 0, sizeof(float) * 8);
+
 	glEnableVertexArrayAttrib(vao, 1);
-	glVertexArrayAttribBinding(vao, 1, 0);
-	glVertexArrayAttribFormat(vao, 1, 3, GL_FLOAT, GL_FALSE, offsetof(SphereVertex, normal));
+	glVertexArrayAttribBinding(vao, 1, 1);
+	glVertexArrayAttribFormat(vao, 1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayVertexBuffer(vao, 1, vbo, sizeof(float) * 3, sizeof(float) * 8);
+
 	glEnableVertexArrayAttrib(vao, 2);
-	glVertexArrayAttribBinding(vao, 2, 0);
-	glVertexArrayAttribFormat(vao, 2, 2, GL_FLOAT, GL_FALSE, offsetof(SphereVertex, uv));
+	glVertexArrayAttribBinding(vao, 2, 2);
+	glVertexArrayAttribFormat(vao, 2, 2, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayVertexBuffer(vao, 2, vbo, sizeof(float) * 6, sizeof(float) * 8);
+
+	glVertexArrayElementBuffer(vao, ebo);
 
 	glEnable(GL_DEPTH_TEST);
 
